@@ -1,0 +1,5 @@
+flask
+weasyprint
+wtforms
+email_validator
+pydyf==0.8.0

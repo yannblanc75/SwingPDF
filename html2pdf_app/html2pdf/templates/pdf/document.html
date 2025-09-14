@@ -1,0 +1,48 @@
+<!-- document.html (PDF) -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>{{ titre }}</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 2cm 1.5cm 2.5cm 1.5cm;
+      @top-center {
+        content: element(header)
+      }
+      @bottom-center {
+        content: element(footer)
+      }
+    }
+    body { font-family: 'DejaVu Sans', Arial, sans-serif; color: #222; }
+    h3 { margin-top: 0; }
+    .document-body { margin: 1em 0; }
+    header { font-size: 1.2em; font-weight: bold; }
+    footer { font-size: 0.9em; color: #888; }
+    .pdf-header { display: block; text-align: center; margin-bottom: 1em; }
+    .pdf-footer { display: block; text-align: right; }
+    ul, ol { margin-left: 1.5em; }
+    /* Pagination */
+    @page {
+      @bottom-right {
+        content: "Page " counter(page) " / " counter(pages);
+        font-size: 0.8em;
+        color: #888;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header id="header" class="pdf-header">
+    {{ titre }}<br>
+    <span style="font-size:0.9em; font-weight:normal;">Auteur : {{ nom }} &lt;{{ email }}&gt;</span>
+  </header>
+  <div class="document-body">
+    {{ corps|safe }}
+  </div>
+  <footer id="footer" class="pdf-footer">
+    Généré le {{ date }}
+  </footer>
+</body>
+</html>

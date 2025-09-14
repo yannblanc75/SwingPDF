@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="fr">
+<meta charset="utf-8">
+<title>{{ titre }}</title>
+<style>
+  body { font-family: Arial, sans-serif; font-size: 12pt; }
+  h1 { font-size: 20pt; margin-bottom: 0.3cm; }
+  .muted { color: #666; font-size: 10pt; }
+</style>
+<body>
+  <h1>{{ titre }}</h1>
+  <p class="muted">Auteur : {{ nom }} &lt;{{ email }}&gt; — Généré le {{ date }}</p>
+  <hr>
+  <div>{{ corps|safe }}</div>
+</body>
+</html>

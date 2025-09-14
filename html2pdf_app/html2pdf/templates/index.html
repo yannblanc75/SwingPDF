@@ -1,0 +1,10 @@
+<!-- index.html -->
+{% extends 'base.html' %}
+{% block title %}Accueil - Mini-App HTML → PDF{% endblock %}
+{% block content %}
+<div class="text-center py-5">
+  <h1 class="display-4 mb-4">Bienvenue sur Mini-App HTML → PDF</h1>
+  <p class="lead mb-4">Saisissez, prévisualisez et exportez vos documents HTML en PDF fidèle, en toute simplicité.</p>
+  <a href="{{ url_for('main.form') }}" class="btn btn-primary btn-lg">Créer un document</a>
+</div>
+{% endblock %}

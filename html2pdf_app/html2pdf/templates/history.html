@@ -1,0 +1,16 @@
+<!-- history.html -->
+{% extends 'base.html' %}
+{% block title %}Historique des PDFs - Mini-App HTML → PDF{% endblock %}
+{% block content %}
+<h2>Historique des documents générés</h2>
+<ul>
+    {% for file in files %}
+        <li>
+            {{ file }}
+            <a href="{{ url_for('main.download', filename=file) }}">Télécharger</a>
+        </li>
+    {% else %}
+        <li>Aucun PDF généré pour l’instant.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

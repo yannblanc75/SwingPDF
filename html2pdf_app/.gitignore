@@ -1,0 +1,26 @@
+# .gitignore
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+.env
+instance/
+html2pdf_app/instance/
+html2pdf_app/html2pdf/static/img/*.svg
+html2pdf_app/html2pdf/static/js/*.js
+html2pdf_app/html2pdf/static/css/*.css
+html2pdf_app/html2pdf/static/
+html2pdf_app/html2pdf/__pycache__/
+html2pdf_app/html2pdf/blueprints/main/__pycache__/
+html2pdf_app/html2pdf/blueprints/__pycache__/
+html2pdf_app/html2pdf/blueprints/main/*.pyc
+html2pdf_app/html2pdf/blueprints/*.pyc
+html2pdf_app/html2pdf/*.pyc
+html2pdf_app/tests/__pycache__/
+html2pdf_app/tests/*.pyc
+html2pdf_app/instance/app.log
+html2pdf_app/instance/generated/

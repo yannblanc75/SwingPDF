@@ -1,0 +1,40 @@
+<!-- templates/form.html -->
+{% extends 'base.html' %}
+{% block title %}Créer un document - Mini-App HTML → PDF{% endblock %}
+{% block content %}
+<h2>Créer un document</h2>
+
+<form method="post" action="{{ url_for('main.form') }}">
+  {{ form.hidden_tag() }}
+
+  <div class="mb-3">
+    {{ form.nom.label(class="form-label") }}
+    {{ form.nom(class="form-control", aria_describedby="nomHelp") }}
+    <div id="nomHelp" class="form-text">{{ form.nom.description }}</div>
+    {% for error in form.nom.errors %}<div class="text-danger">{{ error }}</div>{% endfor %}
+  </div>
+
+  <div class="mb-3">
+    {{ form.email.label(class="form-label") }}
+    {{ form.email(class="form-control", aria_describedby="emailHelp") }}
+    <div id="emailHelp" class="form-text">{{ form.email.description }}</div>
+    {% for error in form.email.errors %}<div class="text-danger">{{ error }}</div>{% endfor %}
+  </div>
+
+  <div class="mb-3">
+    {{ form.titre.label(class="form-label") }}
+    {{ form.titre(class="form-control", aria_describedby="titreHelp") }}
+    <div id="titreHelp" class="form-text">{{ form.titre.description }}</div>
+    {% for error in form.titre.errors %}<div class="text-danger">{{ error }}</div>{% endfor %}
+  </div>
+
+  <div class="mb-3">
+    {{ form.corps.label(class="form-label") }}
+    {{ form.corps(class="form-control", rows=8, aria_describedby="corpsHelp") }}
+    <div id="corpsHelp" class="form-text">{{ form.corps.description }}</div>
+    {% for error in form.corps.errors %}<div class="text-danger">{{ error }}</div>{% endfor %}
+  </div>
+
+  <button type="submit" class="btn btn-success">Prévisualiser</button>
+</form>
+{% endblock %}
