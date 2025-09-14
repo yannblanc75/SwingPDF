@@ -1,16 +1,41 @@
-<!-- history.html -->
 {% extends 'base.html' %}
-{% block title %}Historique des PDFs - Mini-App HTML → PDF{% endblock %}
+{% block title %}Historique — Mini-App HTML → PDF{% endblock %}
 {% block content %}
-<h2>Historique des documents générés</h2>
-<ul>
-    {% for file in files %}
-        <li>
-            {{ file }}
-            <a href="{{ url_for('main.download', filename=file) }}">Télécharger</a>
-        </li>
-    {% else %}
-        <li>Aucun PDF généré pour l’instant.</li>
+<h2 class="page-title mb-4">Historique des documents générés</h2>
+
+<div class="glass rounded-4 p-4">
+  <div class="input-group input-group-lg mb-3">
+    <span class="input-group-text">🔎</span>
+    <input id="history-filter" type="text" class="form-control" placeholder="Rechercher un fichier…">
+    <button class="btn btn-outline-secondary" type="button" id="clear-filter" aria-label="Effacer">✕</button>
+  </div>
+
+  {% if files %}
+  <ul id="history-list" class="list-group list-group-flush">
+    {% for f in files %}
+      <li class="list-group-item d-flex align-items-center justify-content-between gap-3" data-filename="{{ f }}">
+        <div class="text-truncate flex-grow-1">
+          <span class="text-secondary me-2">•</span>
+          <span class="text-break">{{ f }}</span>
+        </div>
+        <div class="btn-group">
+          <a class="btn btn-outline-light btn-sm" href="{{ url_for('main.download', filename=f) }}">Télécharger</a>
+          <button
+            type="button"
+            class="btn btn-primary btn-sm js-copy-link"
+            data-bs-toggle="tooltip"
+            data-bs-title="Copier le lien public"
+            data-url="{{ url_for('main.download', filename=f, _external=True) }}">
+            Copier le lien
+          </button>
+        </div>
+      </li>
     {% endfor %}
-</ul>
+  </ul>
+  {% else %}
+    <p class="m-0 text-secondary">Aucun PDF généré pour l’instant.</p>
+  {% endif %}
+</div>
+
+<!-- liste brute (fallback debug) supprimée pour propreté -->
 {% endblock %}

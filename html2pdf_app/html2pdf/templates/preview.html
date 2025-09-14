@@ -1,28 +1,27 @@
-<!-- templates/preview.html -->
 {% extends 'base.html' %}
-{% block title %}Aperçu du document - Mini-App HTML → PDF{% endblock %}
+{% block title %}Aperçu — Mini-App HTML → PDF{% endblock %}
 {% block content %}
-<h2>Aperçu du document</h2>
+<h2 class="page-title mb-4">Aperçu du document</h2>
 
-<div class="card shadow mb-4">
-  <div class="card-body">
-    <h3 class="mb-2">{{ titre }}</h3>
-    <p class="text-muted mb-1">Auteur : {{ nom }} &lt;{{ email }}&gt;</p>
-    <hr>
-    <div class="document-body">{{ corps|safe }}</div>
-    <hr>
-    <footer class="text-end text-muted small">Généré le {{ date }}</footer>
+<div class="card glass overflow-hidden rounded-4 shadow-sm">
+  <div class="card-body p-4">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+      <h3 class="mb-0">{{ titre }}</h3>
+      <span class="badge bg-secondary-subtle text-secondary">Généré le {{ date }}</span>
+    </div>
+    <p class="text-secondary mb-4">Auteur : <span class="fw-semibold">{{ nom }}</span> &lt;{{ email }}&gt;</p>
+    <div class="document-body fs-5">
+      {{ corps|safe }}
+    </div>
   </div>
 </div>
 
-<!-- Navigation simple -->
-<form method="get" action="{{ url_for('main.form') }}" class="d-inline">
-  <button type="submit" class="btn btn-secondary">Modifier</button>
-</form>
+<div class="d-flex gap-2 mt-4">
+  <a class="btn btn-outline-light" href="{{ url_for('main.form') }}">Modifier</a>
 
-<!-- Action sensible (POST) : CSRF -->
-<form method="post" action="{{ url_for('main.generate_pdf') }}" class="d-inline">
-  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-  <button type="submit" class="btn btn-primary">Générer le PDF</button>
-</form>
+  <form method="post" action="{{ url_for('main.generate_pdf') }}" class="d-inline">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button type="submit" class="btn btn-primary">Générer le PDF</button>
+  </form>
+</div>
 {% endblock %}

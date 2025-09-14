@@ -13,7 +13,7 @@ install: venv
 	$(PIP) install -r requirements.txt
 
 run:
-	FLASK_APP=app.py FLASK_ENV=development $(PYTHON) -m flask run --port=8000
+	FLASK_APP=app FLASK_DEBUG=1 $(PYTHON) -m flask run --port=8000
 
 test:
 	PYTHONPATH=. $(PYTHON) -m pytest tests/

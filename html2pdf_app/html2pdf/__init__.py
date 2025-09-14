@@ -36,4 +36,9 @@ def create_app() -> Flask:
     @app.errorhandler(500)
     def server_error(e):
         return render_template('errors/500.html'), 500
+    @app.context_processor
+    def inject_globals():
+        from datetime import datetime
+        # Utilise UTC ou local selon ton besoin
+        return {"current_year": datetime.utcnow().year}
     return app

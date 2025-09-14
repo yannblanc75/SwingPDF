@@ -3,3 +3,5 @@ weasyprint
 wtforms
 email_validator
 pydyf==0.8.0
+Flask>=3.0
+Flask-WTF>=1.2

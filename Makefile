@@ -1,4 +1,7 @@
-.PHONY: venv install test clean re
+.PHONY: venv install test clean re run
+
+run:
+	FLASK_APP=app FLASK_DEBUG=1 .venv/bin/python -m flask run --port=8000
 
 venv:
 	python3 -m venv html2pdf_app/.venv
@@ -17,4 +20,4 @@ clean:
 	find html2pdf_app -type f -name "*.pyc" -delete
 	find html2pdf_app -type d -name ".pytest_cache" -exec rm -rf {} +
 
-re: clean test
+re: clean install venv run
