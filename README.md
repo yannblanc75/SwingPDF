@@ -1,6 +1,4 @@
-# README.md
-
-# Mini-App HTML → PDF
+# SwingPDF HTML → PDF
 
 Application Flask permettant de saisir un document via formulaire, prévisualiser en HTML, puis générer un PDF fidèle (WeasyPrint).
 
@@ -72,4 +70,5 @@ html2pdf_app/
 
 ---
 
-© 2025 Mini-App HTML → PDF
+
+© 2025 SwingPDF HTML → PDF
