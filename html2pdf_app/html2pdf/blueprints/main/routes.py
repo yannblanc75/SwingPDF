@@ -1,31 +1,33 @@
 # routes.py
 from flask import (
     render_template, redirect, url_for, session,
-    current_app, send_from_directory, flash
+    current_app, send_from_directory, flash, request, abort
 )
 import os
 import datetime
+from pathlib import Path
 from markupsafe import Markup
+
 from . import main_bp
-from .forms import DocumentForm
+from .forms import DocumentForm, UrlToPdfForm
 from .services import PdfService, StorageService
 
 
 @main_bp.route("/")
 def index():
-    return render_template("index.html")
+    # Page d’accueil avec le formulaire URL → PDF
+    return render_template("index.html", url_form=UrlToPdfForm())
 
 
 @main_bp.route("/form", methods=["GET", "POST"])
 def form():
     form = DocumentForm()
     if form.validate_on_submit():
-        # On fabrique un payload propre pour l’aperçu (et le PDF)
         preview = {
             "nom": form.nom.data,
             "email": form.email.data,
             "titre": form.titre.data,
-            "corps": form.corps.data,  # stocké brut; on le marquera safe à l’affichage
+            "corps": form.corps.data,
             "date": datetime.datetime.now().strftime("%d %B %Y"),
         }
         session["preview"] = preview
@@ -37,10 +39,9 @@ def form():
 def preview():
     data = session.get("preview")
     if not data:
-        flash("Veuillez remplir le formulaire avant de prévisualiser.")
+        flash("Veuillez remplir le formulaire avant de prévisualiser.", "warning")
         return redirect(url_for("main.form"))
 
-    # On repasse un formulaire juste pour avoir un csrf_token disponible
     form = DocumentForm(data=data)
 
     return render_template(
@@ -49,7 +50,7 @@ def preview():
         nom=data["nom"],
         email=data["email"],
         titre=data["titre"],
-        corps=Markup(data["corps"]),  # rendu HTML autorisé
+        corps=Markup(data["corps"]),
         date=data["date"],
     )
 
@@ -58,33 +59,57 @@ def preview():
 def generate_pdf():
     data = session.get("preview")
     if not data:
-        flash("La prévisualisation a expiré. Merci de recommencer.")
+        flash("La prévisualisation a expiré. Merci de recommencer.", "warning")
         return redirect(url_for("main.form"))
 
-    # Générer le HTML du PDF depuis un template dédié
     html = render_template("pdf_template.html", **data)
-
-    # Générer le PDF (bytes)
     pdf_bytes = PdfService.render_html_to_pdf(html)
 
-    # Dossier de sortie
-    generated_dir = os.path.join(current_app.instance_path, "generated")
-    os.makedirs(generated_dir, exist_ok=True)
+    generated_dir = Path(current_app.instance_path) / "generated"
+    generated_dir.mkdir(parents=True, exist_ok=True)
+
+    filename = StorageService.unique_filename(data.get("titre", "document"))
+    (generated_dir / filename).write_bytes(pdf_bytes)
+
+    session.pop("preview", None)
+    flash("PDF généré avec succès.", "success")
+    return redirect(url_for("main.history"))
+
+
+@main_bp.route("/convert/url", methods=["POST"])
+def convert_url():
+    """
+    Conversion d'une URL en PDF via Chromium headless (Playwright)
+    """
+    form = UrlToPdfForm()
+    if not form.validate_on_submit():
+        flash("Requête invalide. Vérifiez l’URL saisie.", "danger")
+        return abort(400)
+
+    url = form.url.data.strip()
+    # Optionnel : restreindre aux schémas http/https
+    if not (url.startswith("http://") or url.startswith("https://")):
+        flash("Seules les URLs http(s) sont acceptées.", "danger")
+        return abort(400)
 
     # Nom de fichier
-    filename = StorageService.unique_filename(data.get("titre", "document"))
-    StorageService.save_pdf(pdf_bytes, filename, generated_dir)
+    base_name = form.filename.data.strip() if form.filename.data else "document"
+    filename = StorageService.unique_filename(base_name)
 
-    # Nettoyage optionnel
-    session.pop("preview", None)
+    # Rendu PDF (navigateur)
+    pdf_bytes = PdfService.render_url_to_pdf(url)
 
-    flash("PDF généré avec succès.")
+    # Sauvegarde
+    generated_dir = Path(current_app.instance_path) / "generated"
+    generated_dir.mkdir(parents=True, exist_ok=True)
+    (generated_dir / filename).write_bytes(pdf_bytes)
+
+    flash("PDF généré à partir de l’URL.", "success")
     return redirect(url_for("main.history"))
 
 
 @main_bp.route("/history")
 def history():
-    from pathlib import Path
     generated_dir = Path(current_app.instance_path) / "generated"
     generated_dir.mkdir(parents=True, exist_ok=True)
     files = sorted((f.name for f in generated_dir.glob("*.pdf")), reverse=True)

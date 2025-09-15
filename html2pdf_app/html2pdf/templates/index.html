@@ -1,13 +1,42 @@
 {% extends 'base.html' %}
 {% block title %}Accueil — Mini-App HTML → PDF{% endblock %}
+
 {% block content %}
-<section class="hero glass rounded-4 p-5 text-center">
-  <h1 class="display-5 fw-semibold mb-3">Bienvenue sur <span class="gradient-text">Mini-App HTML → PDF</span></h1>
+<section class="hero glass rounded-4 p-5 text-center mb-4">
+  <h1 class="display-5 fw-semibold mb-3">
+    Bienvenue sur <span class="gradient-text">Mini-App HTML → PDF</span>
+  </h1>
   <p class="lead text-secondary mb-4">
     Saisissez, prévisualisez et exportez vos contenus HTML en PDF fidèle, en toute simplicité.
   </p>
   <a class="btn btn-primary btn-lg px-4" href="{{ url_for('main.form') }}">
     Créer un document
   </a>
+</section>
+
+<section class="card border-0 shadow-sm p-4">
+  <h2 class="h4 mb-3">Convertir une URL en PDF (rendu navigateur)</h2>
+  <form method="post" action="{{ url_for('main.convert_url') }}" class="row g-3">
+    {{ url_form.hidden_tag() }}
+    <div class="col-12 col-lg-8">
+      <label class="form-label">{{ url_form.url.label }}</label>
+      {{ url_form.url(class="form-control", placeholder=url_form.url.render_kw.placeholder, aria_describedby="urlHelp") }}
+      <div class="form-text" id="urlHelp">{{ url_form.url.description }}</div>
+      {% for error in url_form.url.errors %}
+        <div class="text-danger small">{{ error }}</div>
+      {% endfor %}
+    </div>
+    <div class="col-12 col-lg-4">
+      <label class="form-label">{{ url_form.filename.label }}</label>
+      {{ url_form.filename(class="form-control", placeholder=url_form.filename.render_kw.placeholder) }}
+      <div class="form-text">Laissez vide pour un nom automatique.</div>
+      {% for error in url_form.filename.errors %}
+        <div class="text-danger small">{{ error }}</div>
+      {% endfor %}
+    </div>
+    <div class="col-12">
+      {{ url_form.submit(class="btn btn-primary") }}
+    </div>
+  </form>
 </section>
 {% endblock %}
